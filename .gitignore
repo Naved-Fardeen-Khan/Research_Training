@@ -5,3 +5,5 @@ phi-3-mini-lora/
 __pycache__/
 *.pt
 *.bin
+*.out
+hf_cache/

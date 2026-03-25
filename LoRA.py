@@ -76,7 +76,7 @@ training_args = SFTConfig(
     num_train_epochs=1,
     per_device_train_batch_size=4,
     gradient_accumulation_steps=4, # Effective batch size = 4 * 4 = 16
-    learning_rate=2e-4,
+    learning_rate=1e-5,
     max_grad_norm=0.3,
     fp16=False,
     optim="paged_adamw_32bit", # Use 32-bit optimizer for stability with 4-bit models
@@ -84,6 +84,7 @@ training_args = SFTConfig(
     dataset_text_field="text",
     max_length=128,
     report_to="none", # Disable WandB logging for a clean test run
+    max_grad_norm=0.3, # Gradient clipping to prevent exploding gradients
 
 
     # For 10,000 samples prototype:
@@ -94,7 +95,7 @@ training_args = SFTConfig(
     # eval_steps=100,
 
     # For complete 800,000 samples:
-    save_steps=1000,
+    save_steps=5000,
     save_total_limit=3,
     logging_steps=500,
     eval_strategy="steps",
@@ -111,7 +112,7 @@ trainer = SFTTrainer(
     peft_config=peft_config,
     processing_class=tokenizer
 )
-trainer.train(resume_from_checkpoint=True)  # Resume from last checkpoint if exists
+trainer.train()  # Start fresh, last checkpoint was corrupted
 
 # --- 8. SAVE THE MODEL ---
 print("Saving the fine-tuned model...")

@@ -77,9 +77,9 @@ training_args = SFTConfig(
     per_device_train_batch_size=4,
     gradient_accumulation_steps=4, # Effective batch size = 4 * 4 = 16
     learning_rate=1e-5,
-    max_grad_norm=0.3,
     fp16=False,
     optim="paged_adamw_32bit", # Use 32-bit optimizer for stability with 4-bit models
+    adam_epsilon=1e-8,
     warmup_ratio=0.03,
     dataset_text_field="text",
     max_length=128,

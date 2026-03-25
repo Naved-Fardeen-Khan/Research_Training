@@ -1,0 +1,7 @@
+phi-3-mini-lora/
+*.jsonl
+*.txt
+*.csv
+__pycache__/
+*.pt
+*.bin

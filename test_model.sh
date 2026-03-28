@@ -2,7 +2,7 @@
 #SBATCH --job-name=test_phi3
 #SBATCH --account=project_2018500
 #SBATCH --partition=gpu
-#SBATCH --time=00:10:00
+#SBATCH --time=00:30:00
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:v100:1
 #SBATCH --mem=32G

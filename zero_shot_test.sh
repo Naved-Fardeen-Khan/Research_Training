@@ -2,11 +2,11 @@
 #SBATCH --job-name=test_phi3
 #SBATCH --account=project_2018500
 #SBATCH --partition=gpu
-#SBATCH --time=12:00:00
+#SBATCH --time=00:30:00
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:v100:1
-#SBATCH --mem=64G
-#SBATCH --output=test_log_%j.txt  # Nicely names output file
+#SBATCH --mem=32G
+#SBATCH --output=zero_shot_log_%j.txt  # Nicely names output file
 
 module load pytorch
 
@@ -16,4 +16,4 @@ export HF_HOME=/scratch/project_2018500/hf_cache
 export HF_DATASETS_CACHE=/scratch/project_2018500/hf_cache/datasets 
 
 # Launch the script!
-python3 test_model.py
+python3 zero_shot_test.py

@@ -19,7 +19,6 @@ def ttr_calculate(text):
 
 # --- 1. SETTINGS ---
 base_model_id = "microsoft/Phi-3-mini-4k-instruct"
-adapter_path = "./phi-3-mini-lora/final_adapter"
 
 # VARIABLES 
 age_in_months = list(range(3, 85, 3))  # 3, 6, 9, ..., 84 months
@@ -30,15 +29,14 @@ ttr_list = []
 all_speeches = []
 
 # --- 2. LOAD MODEL & ADAPTER ---
+
+# Load just the base model
 model = AutoModelForCausalLM.from_pretrained(
     base_model_id,
     dtype=torch.float16,
     device_map="auto",
     trust_remote_code=False
 )
-
-# Load LoRA adapter on top of the base model
-model = PeftModel.from_pretrained(model, adapter_path)
 tokenizer = AutoTokenizer.from_pretrained(base_model_id)
 
 for age in age_in_months:
@@ -98,9 +96,9 @@ for age in age_in_months:
 
 print("\nAll generations completed.")
 
-# Create a directory for fine-tuned results if it doesn't exist
-if not os.path.exists('fine_tuned_results'):
-    os.makedirs('fine_tuned_results')
+# Create a directory for zero-shot results if it doesn't exist
+if not os.path.exists('zero_shot_results'):
+    os.makedirs('zero_shot_results')
 
 # --- 4. PLOT TTR RESULTS ---
 plt.figure(figsize=(10, 6))
@@ -115,13 +113,13 @@ plt.grid(True, linestyle='--', alpha=0.7)
 # Save the plot as a file (standard for Puhti)
 i = 1
 while True:
-    filename = f'fine_tuned_results/ttr_diversity_plot{i}.png'
+    filename = f'zero_shot_results/ttr_diversity_plot{i}.png'
     if not os.path.exists(filename):
         plt.savefig(filename)
         break
     i += 1
 
-print(f'TTR plot saved as fine_tuned_results/ttr_diversity_plot{i}.png')
+print(f'TTR plot saved as zero_shot_results/ttr_diversity_plot{i}.png')
 
 
 # --- 5. SAVE ALL SPEECHES IN A 2D MATRIX STRUCTURE ---
@@ -130,7 +128,7 @@ import csv
 # all_speeches is currently: [[age3_s1, age3_s2...], [age6_s1, age6_s2...]]
 # zip(*all_speeches) turns it into: [(age3_s1, age6_s1...), (age3_s2, age6_s2...)]
 # i is already defined from the previous loop for naming files, so we can reuse it here to avoid overwriting
-with open(f'fine_tuned_results/speeches_matrix{i}_with_temp{temperature}_and_top_p{top_p}.csv', 'x', encoding='utf-8', newline='') as f:
+with open(f'zero_shot_results/speeches_matrix{i}_with_temp{temperature}_and_top_p{top_p}.csv', 'x', encoding='utf-8', newline='') as f:
     writer = csv.writer(f)
             
     # Write the Header (Ages as columns)
@@ -142,5 +140,5 @@ with open(f'fine_tuned_results/speeches_matrix{i}_with_temp{temperature}_and_top
     for row in zip(*all_speeches):
         writer.writerow(row)
 
-print(f"Matrix saved as 'fine_tuned_results/speeches_matrix{i}_with_temp{temperature}_and_top_p{top_p}.csv'")
+print(f"Matrix saved as 'zero_shot_results/speeches_matrix{i}_with_temp{temperature}_and_top_p{top_p}.csv'")
         

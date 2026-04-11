@@ -6,3 +6,5 @@ __pycache__/
 *.bin
 *.out
 hf_cache/
+Training_data/
+txt_data/

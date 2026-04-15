@@ -73,6 +73,7 @@ sns.boxplot(x="Age_Num", y="Perplexity", hue="Condition", data=df_ppl)
 plt.title("Perplexity Comparison: Zeroshot vs Finetuned")
 plt.xlabel("Age Group (months)")
 plt.ylabel("Perplexity")
+plt.yscale("log")  # Use logarithmic scale for better visibility of differences
 plt.legend(title="Condition")
 plt.savefig(output_png)
 print(f"Plot saved to {output_png}")

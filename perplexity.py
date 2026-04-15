@@ -66,7 +66,7 @@ df_ppl.to_csv(output_csv, index=False)
 print(f"Results saved to {output_csv}")
 
 # Extract the number from "3 Months" and convert to integer for proper sorting
-df_ppl['Age_Num'] = df_ppl['Age'].str.extract('(\d+)').astype(int)
+df_ppl['Age_Num'] = df_ppl['Age'].str.extract(r'(\d+)').astype(int)
 df_ppl = df_ppl.sort_values('Age_Num')
 plt.figure(figsize=(12, 6))
 sns.boxplot(x="Age_Num", y="Perplexity", hue="Condition", data=df_ppl)

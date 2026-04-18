@@ -14,6 +14,10 @@ adapter_path = "./phi-3-mini-lora/final_adapter"
 input_csv = "combined_csv_files/combined_real_world_results.csv"
 output_csv = "perplexity_results_comparison.csv"
 output_png = "perplexity_comparison.png"
+output_png_log = "perplexity_comparison_log.png"
+output_dir = "plots"
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -61,7 +65,9 @@ df_real = pd.read_csv(input_csv)
 results = []
 
 # First: Calculate for Zeroshot (Base Model)
+print("-" * 50)
 print("Calculating Zeroshot Perplexity...")
+print("-" * 50)
 for col in tqdm(df_real.columns, desc="Processing Age Groups"):
     sentences = df_real[col].dropna().tolist()
     for sent in sentences:
@@ -69,7 +75,9 @@ for col in tqdm(df_real.columns, desc="Processing Age Groups"):
         results.append({"Age": col, "Perplexity": ppl, "Condition": "Zeroshot"})
 
 # Second: Load Adapter and Calculate for Finetuned
+print("-" * 50)
 print("Loading Adapter and Calculating Finetuned Perplexity...")
+print("-" * 50)
 ft_model = PeftModel.from_pretrained(base_model, adapter_path).to(device)
 
 for col in tqdm(df_real.columns, desc="Processing Age Groups"):
@@ -82,17 +90,64 @@ for col in tqdm(df_real.columns, desc="Processing Age Groups"):
 df_ppl = pd.DataFrame(results)
 df_ppl.to_csv(output_csv, index=False)
 print(f"Results saved to {output_csv}")
-
+order = 2        # 2nd order polynomial for the growth curve
+# Official Palette (High-Contrast, Colorblind-Friendly)
+palette = {"Zeroshot": "#1b9e77", "Finetuned": "#d95f02"}
 # Extract the number from "3 Months" and convert to integer for proper sorting
 df_ppl['Age_Num'] = df_ppl['Age'].str.extract(r'(\d+)').astype(int)
 df_ppl = df_ppl.sort_values('Age_Num')
 plt.figure(figsize=(12, 6))
+sns.set_style("whitegrid")
+# Violin plot in general scale
+ax = sns.violinplot(x="Age_Num", y="Perplexity", hue="Condition", data=df_ppl, palette=palette, split=True)
+# Polynomial trend lines
+for condition in df_ppl['Condition'].unique():
+    subset = df_ppl[df_ppl['Condition'] == condition]
+    # Calculate median perplexity for each age group
+    medians = subset.groupby('Age_Num')['Perplexity'].median().reset_index()
+    # Fit a polynomial curve to the medians
+    coeffs = np.polyfit(medians['Age_Num'], medians['Perplexity'], order)
+    poly_func = np.poly1d(coeffs)
+    x_vals = np.linspace(medians['Age_Num'].min(), medians['Age_Num'].max(), 100)
+    y_vals = poly_func(x_vals)
+    plt.plot(x_vals, y_vals, label=f"{condition} Trend", linestyle='--')
+plt.title("Perplexity Comparison: Zeroshot vs Finetuned")
+plt.xlabel("Age Group (months)")
+plt.ylabel("Perplexity")
+plt.legend(title="Condition")
+plt.savefig(os.path.join(output_dir, output_png))
+print(f"Plot saved to {os.path.join(output_dir, output_png)}")
+plt.show()
+
+# Violin plot in log scale
+plt.figure(figsize=(12, 6))
+sns.set_style("whitegrid")
+ax = sns.violinplot(x="Age_Num", y="Perplexity", hue="Condition", data=df_ppl, palette=palette, split=True)
+for condition in df_ppl['Condition'].unique():
+    subset = df_ppl[df_ppl['Condition'] == condition]
+    medians = subset.groupby('Age_Num')['Perplexity'].median().reset_index()
+    coeffs = np.polyfit(medians['Age_Num'], medians['Perplexity'], order)
+    poly_func = np.poly1d(coeffs)
+    x_vals = np.linspace(medians['Age_Num'].min(), medians['Age_Num'].max(), 100)
+    y_vals = poly_func(x_vals)
+    plt.plot(x_vals, y_vals, label=f"{condition} Trend", linestyle='--')
+plt.title("Perplexity Comparison (Log Scale): Zeroshot vs Finetuned")
+plt.xlabel("Age Group (months)")
+plt.ylabel("Perplexity (log scale)")
+plt.yscale("log")
+plt.legend(title="Condition")
+plt.savefig(os.path.join(output_dir, output_png_log))
+print(f"Log scale plot saved to {os.path.join(output_dir, output_png_log)}")
+plt.show()
+
+'''
 sns.boxplot(x="Age_Num", y="Perplexity", hue="Condition", data=df_ppl)
 plt.title("Perplexity Comparison: Zeroshot vs Finetuned")
 plt.xlabel("Age Group (months)")
 plt.ylabel("Perplexity")
 plt.yscale("log")  # Use logarithmic scale for better visibility of differences
 plt.legend(title="Condition")
-plt.savefig(output_png)
-print(f"Plot saved to {output_png}")
+plt.savefig(os.path.join(output_dir, output_png))
+print(f"Plot saved to {os.path.join(output_dir, output_png)}")
 plt.show()
+'''

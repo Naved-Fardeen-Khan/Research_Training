@@ -177,7 +177,7 @@ plt.title("Model Perplexity Comparison", fontsize=20, fontweight='bold')
 plt.xlabel("Age of Child (Months)", fontsize=14)
 plt.ylabel("Perplexity (Log Scale)", fontsize=14)
 plt.yscale("log") # CRITICAL: Without this, the plot looks flat due to outliers
-plt.legend(title="Condition", bbox_to_anchor=(1.02, 1), loc='upper left', borderaxespad=0)
+plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left', borderaxespad=0)
 plt.tight_layout()
 
 plt.savefig(os.path.join(output_dir, "perplexity_triple_comparison.png"), dpi=300)

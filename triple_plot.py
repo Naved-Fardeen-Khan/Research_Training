@@ -134,10 +134,12 @@ plt.tight_layout()
 plt.savefig(f'{output_dir}/final_length_triple_comparison_plot.png', dpi=300)
 print("Length plot successfully generated and saved.")
 plt.show()
+
 # --- 5. PLOTTING PERPLEXITY ---
 df_ppl = pd.read_csv(ppl_input_csv)
 # Ensure Age_Num is integer and sorted
-df_ppl['Age_Num'] = df_ppl['Age'].str.extract(r'(\d+)').astype(int)
+df_ppl = df_ppl[df_ppl['Age'].astype(int) <= 78] # Remove ages above 78 months
+df_ppl['Age_Num'] = df_ppl['Age'].astype(int)
 df_ppl = df_ppl.sort_values('Age_Num')
 
 # Create a mapping to find the violin position (0, 1, 2...) for each age
@@ -147,8 +149,8 @@ age_to_idx = {age: i for i, age in enumerate(unique_ages)}
 plt.figure(figsize=(16, 8))
 sns.set_style("whitegrid")
 
-# A. Double Violin Plot for Perplexity
-# Note: Use Age_Num here so the labels are clean numbers
+# A. Triple Violin Plot for Perplexity
+
 ax = sns.violinplot(x="Age_Num", y="Perplexity", hue="Condition", data=df_ppl, 
                     palette=palette, cut=0, alpha=0.6, inner="quartile")
 
@@ -157,7 +159,6 @@ for condition in df_ppl['Condition'].unique():
     subset = df_ppl[df_ppl['Condition'] == condition]
     medians = subset.groupby('Age_Num')['Perplexity'].median().reset_index()
     
-    # FIX: Use indices (0, 1, 2...) for the x-coordinates of the trend line
     x_coords = medians['Age_Num'].map(age_to_idx).values
     y_values = medians['Perplexity'].values
     
@@ -173,7 +174,7 @@ for condition in df_ppl['Condition'].unique():
              linestyle=line_styles.get(condition, "-"), color=palette[condition], linewidth=3)
 
 # C. Formatting
-plt.title("Model Perplexity Comparison", fontsize=20, fontweight='bold')
+plt.title("Perplexity Comparison", fontsize=20, fontweight='bold')
 plt.xlabel("Age of Child (Months)", fontsize=14)
 plt.ylabel("Perplexity (Log Scale)", fontsize=14)
 plt.yscale("log") # CRITICAL: Without this, the plot looks flat due to outliers

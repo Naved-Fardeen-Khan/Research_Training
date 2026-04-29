@@ -30,10 +30,37 @@ def calculate_group_ttr(text_list):
     words = re.findall(r'\b\w+\b', combined)
     return len(set(words)) / len(words) if words else np.nan
 
-def calculate_length(text):
-    """Calculates the number of words in a text."""
-    return len(re.findall(r'\b\w+\b', str(text).lower()))
-   
+def calculate_length(text_data):
+    """Calculates Average Words per Sentence (Mean Length of Utterance)."""
+    if not isinstance(text_data, list):
+        text_data = [text_data]
+        
+    total_words = 0
+    total_sentences = 0
+    
+    for item in text_data:
+        text = str(item)
+        if not text.strip():
+            continue
+            
+        # 1. Count Words (keeping hyphens and contractions)
+        words = re.findall(r"[\w'-]+", text.lower())
+        #print(f"Utterance: '{text}' | Words: {len(words)}")
+        total_words += len(words)
+        
+        # 2. Count Sentences (split by period, exclamation, or question mark)
+        # re.split leaves empty strings for trailing punctuation, so we filter them out
+        sentence_fragments = [s for s in re.split(r'[.!?]+', text) if len(s.strip()) > 0]
+        
+        # In CHILDES, an utterance might have no punctuation (e.g., "choo-choo"). 
+        # We ensure it always counts as at least 1 sentence.
+        num_sentences = max(1, len(sentence_fragments))
+        total_sentences += num_sentences
+        
+    # Return the true average sentence length
+    #print(f"Total Words: {total_words} | Total Sentences: {total_sentences} | Average Length: {total_words / total_sentences:.2f}")
+    return total_words / total_sentences
+ 
 # --- 2. DATA PROCESSING ---
 all_data = []
 
@@ -51,15 +78,17 @@ for label, path in paths.items():
             sentences = df[col_name].dropna().tolist()
             
             # SLIDING WINDOW: This creates the "fat" violins seen in natural language
-            # Instead of 1 TTR per sentence (mostly 1.0), we get 1 TTR per 10 sentences.
+            # Instead of 1 TTR per sentence (mostly 1.0), we get 1 TTR per group of sentences.
             for i in range(0, len(sentences), group_size):
                 chunk = sentences[i : i + group_size]
                 if len(chunk) >= (group_size / 2): # Allow smaller groups at the end
                     ttr_val = calculate_group_ttr(chunk)
-                    length_val = calculate_length(chunk) / group_size  # Average length per sentence in the chunk
+                    length_val = calculate_length(chunk) if chunk else np.nan  # Average length per sentence in the chunk
+                    #print(f"Age: {age} Months | Condition: {label} | TTR: {ttr_val:.4f} | Avg Length: {length_val:.2f}")
                     all_data.append({"Age": age, "TTR": ttr_val, "Condition": label, "Length": length_val})
 
 df_final = pd.DataFrame(all_data)
+#print(df_final.head())
 
 # --- 3. PLOTTING TTR ---
 plt.figure(figsize=(16, 8))
@@ -70,7 +99,7 @@ sns.set_style("whitegrid")
 ax = sns.violinplot(data=df_final, x="Age", y="TTR", hue="Condition", 
                     palette=palette, cut=0, alpha=0.6, inner="quartile")
 
-# B. Polynomial Trend Lines (MATLAB polyfit logic)
+# B. Polynomial Trend Lines for TTR
 # We calculate the median per age to draw the dashed lines
 for label in paths.keys():
     subset = df_final[df_final["Condition"] == label]

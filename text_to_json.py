@@ -4,7 +4,7 @@ import re # For regular expressions
 import random # For random selection of instruction templates
 
 
-root = '/Users/fardeen/Documents/Study/Research_Training/txt_data' # Root directory containing age group folders
+root = 'txt_data' # Root directory containing age group folders
 
 if not os.path.exists(root):
     raise FileNotFoundError(f"The specified root directory '{root}' does not exist.")
@@ -15,7 +15,7 @@ mother_json = 'mot.jsonl' # Output JSON file for mother utterances
 father_json = 'fat.jsonl' # Output JSON file for father utterances
 '''
 
-output_file = '/Users/fardeen/Documents/Study/Research_Training/combined.jsonl' # Output JSON file for combined mother and father utterances
+output_file = 'combined.jsonl' # Output JSON file for combined mother and father utterances
 
 # Regex pattern to extract age from folder name of format 'childes_age_<age in months>'
 age_pattern = re.compile(r'childes_age_(\d+)')

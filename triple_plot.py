@@ -52,8 +52,7 @@ def calculate_length(text_data):
         # re.split leaves empty strings for trailing punctuation, so we filter them out
         sentence_fragments = [s for s in re.split(r'[.!?]+', text) if len(s.strip()) > 0]
         
-        # In CHILDES, an utterance might have no punctuation (e.g., "choo-choo"). 
-        # We ensure it always counts as at least 1 sentence.
+        # Ensure it always has at least 1 sentence.
         num_sentences = max(1, len(sentence_fragments))
         total_sentences += num_sentences
         
@@ -69,7 +68,6 @@ for label, path in paths.items():
         print(f"Warning: {path} not found. Skipping {label}.")
         continue
         
-    # Read CSV, ensuring we handle potentially missing headers in real-world data
     df = pd.read_csv(path)
     
     for age in valid_ages:
@@ -77,7 +75,6 @@ for label, path in paths.items():
         if col_name in df.columns:
             sentences = df[col_name].dropna().tolist()
             
-            # SLIDING WINDOW: This creates the "fat" violins seen in natural language
             # Instead of 1 TTR per sentence (mostly 1.0), we get 1 TTR per group of sentences.
             for i in range(0, len(sentences), group_size):
                 chunk = sentences[i : i + group_size]
@@ -130,7 +127,7 @@ plt.ylim(.1, .75) # TTR is between 0 and 1, but we know it won't reach 1 with ou
 plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left', borderaxespad=0)
 
 plt.tight_layout()
-plt.savefig(f'{output_dir}/final_triple_comparison_plot.png', dpi=300)
+plt.savefig(f'{output_dir}/ttr_triple_comparison_plot.png', dpi=300)
 print("TTR Plot successfully generated and saved.")
 plt.show()
 
@@ -160,7 +157,7 @@ plt.ylabel("Average Utterance Length (Words)", fontsize=14)
 plt.xticks(rotation=0)
 plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left', borderaxespad=0)
 plt.tight_layout()
-plt.savefig(f'{output_dir}/final_length_triple_comparison_plot.png', dpi=300)
+plt.savefig(f'{output_dir}/length_triple_comparison_plot.png', dpi=300)
 print("Length plot successfully generated and saved.")
 plt.show()
 
@@ -210,6 +207,6 @@ plt.yscale("log") # CRITICAL: Without this, the plot looks flat due to outliers
 plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left', borderaxespad=0)
 plt.tight_layout()
 
-plt.savefig(os.path.join(output_dir, "perplexity_triple_comparison.png"), dpi=300)
+plt.savefig(f'{output_dir}/perplexity_triple_comparison_plot.png', dpi=300)
 print(f"Fixed Perplexity plot saved to {output_dir}")
 plt.show()

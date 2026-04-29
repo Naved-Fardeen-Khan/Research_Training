@@ -158,4 +158,4 @@ plt.grid(True, linestyle="--", alpha=0.7)
 # 6. Save the image to your output folder
 plot_path = f"{output_dir}/loss_curve.png"
 plt.savefig(plot_path, dpi=300, bbox_inches="tight")
-print(f"Beautiful! Loss curve saved successfully to {plot_path}")
+print(f"Loss curve saved successfully to {plot_path}")

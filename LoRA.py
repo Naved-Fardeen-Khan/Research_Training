@@ -15,8 +15,6 @@ print(f"Using model: {model_id}")
 print("Loading and splitting dataset...")
 raw_dataset = load_dataset("json", data_files="combined.jsonl", split="train")
 
-# SHUFFLE AND GRAB JUST 10,000 ROWS FOR A FAST PROTOTYPE
-# raw_dataset = raw_dataset.shuffle(seed=42).select(range(10000))
 
 # Split 10% for validation
 train_test_split = raw_dataset.train_test_split(test_size=0.1, seed=42)
@@ -123,7 +121,7 @@ print(f"Success! Model saved to {output_dir}/final_adapter")
 # --- 9. PLOT THE PERPLEXITY CURVE ---
 print("Extracting logs and generating perplexity curve plot...")
 
-# The trainer stores cross-entropy loss in its log history, so we need to convert it to perplexity using the formula: perplexity = exp(loss).
+# The trainer stores cross-entropy loss in its log history.
 
 # 1. Open the trainer's hidden diary
 log_history = trainer.state.log_history
@@ -136,12 +134,12 @@ eval_loss = []
 
 # 3. Sort the diary entries into training scores and exam scores
 for entry in log_history:
-    # Grab training loss (happens every 50 steps based on your config)
+    # Grab training loss (happens every 50 steps based on our config)
     if "loss" in entry and "step" in entry:
         perplexity = math.exp(entry["loss"])
         train_steps.append(entry["step"])
         train_loss.append(perplexity)
-    # Grab evaluation loss (happens every 100 steps based on your config)
+    # Grab evaluation loss (happens every 1000 steps based on our config)
     elif "eval_loss" in entry and "step" in entry:
         perplexity = math.exp(entry["eval_loss"])
         eval_steps.append(entry["step"])
@@ -151,18 +149,16 @@ for entry in log_history:
 plt.figure(figsize=(10, 6))
 plt.plot(train_steps, train_loss, label="Training Perplexity", color="blue", alpha=0.6, linewidth=2)
 
-# Only plot the eval line if we actually took the exams
 if eval_steps: 
     plt.plot(eval_steps, eval_loss, label="Evaluation (Test) Perplexity", color="red", marker="o", linewidth=2)
 
-# 5. Make it look professional
 plt.title("LoRA Fine-Tuning Perplexity Curve")
 plt.xlabel("Training Steps")
 plt.ylabel("Perplexity")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.7)
 
-# 6. Save the image to your output folder
+# 5. Save the image to your output folder
 plot_path = f"{output_dir}/perplexity_curve.png"
 plt.savefig(plot_path, dpi=300, bbox_inches="tight")
 print(f"\nPerplexity curve saved successfully to {plot_path}")

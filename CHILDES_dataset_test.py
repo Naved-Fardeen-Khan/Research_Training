@@ -16,8 +16,7 @@ def ttr_calculate(text):
     return len(types) / len(tokens)
 
 # --- SETTINGS ---
-# Use the same root as your conversion script
-root_path = '/Users/fardeen/Documents/Study/Research_Training/txt_data' 
+path = 'txt_data' 
 target_ages = list(range(3, 85, 3)) # The same bins used for generation
 samples_per_age = 100
 
@@ -32,10 +31,10 @@ print("Sampling real-world data for TTR comparison...")
 for target_age in target_ages:
     if target_age < 10:
         folder_name = f"childes_age_00{target_age}"
-        full_folder_path = os.path.join(root_path, folder_name)
+        full_folder_path = os.path.join(path, folder_name)
     else:
         folder_name = f"childes_age_0{target_age}"
-        full_folder_path = os.path.join(root_path, folder_name)
+        full_folder_path = os.path.join(path, folder_name)
     
     age_pool = []
     
@@ -57,7 +56,6 @@ for target_age in target_ages:
             print(f"Warning: Only found {len(age_pool)} lines for age {target_age}")
             
         # 3. Calculate TTR for the REAL data
-        # Use your existing ttr_calculate function here
         real_ttr = ttr_calculate(sample) 
         real_world_ttr_results.append(real_ttr)
         all_real_speeches.append(sample)

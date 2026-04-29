@@ -127,7 +127,6 @@ import csv
 
 # all_speeches is currently: [[age3_s1, age3_s2...], [age6_s1, age6_s2...]]
 # zip(*all_speeches) turns it into: [(age3_s1, age6_s1...), (age3_s2, age6_s2...)]
-# i is already defined from the previous loop for naming files, so we can reuse it here to avoid overwriting
 with open(f'zero_shot_results/speeches_matrix{i}_with_temp{temperature}_and_top_p{top_p}.csv', 'x', encoding='utf-8', newline='') as f:
     writer = csv.writer(f)
             

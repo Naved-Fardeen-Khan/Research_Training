@@ -5,6 +5,7 @@ __pycache__/
 *.pt
 *.bin
 *.out
+*.html
 hf_cache/
 Training_data/
 txt_data/

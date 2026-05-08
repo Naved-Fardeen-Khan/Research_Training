@@ -112,7 +112,7 @@ plt.ylabel('Type-Token Ratio (TTR)')
 plt.xticks(age_in_months)   
 plt.grid(True, linestyle='--', alpha=0.7)
 
-# Save the plot as a file (standard for Puhti)
+# Save the plot as a file with a unique name to avoid overwriting
 i = 1
 while True:
     filename = f'fine_tuned_results/ttr_diversity_plot{i}.png'

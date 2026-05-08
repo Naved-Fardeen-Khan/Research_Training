@@ -4,7 +4,7 @@ import re # For regular expressions
 import random # For random selection of instruction templates
 
 
-root = 'txt_data' # Root directory containing age group folders
+root = input("Enter the path to the root directory containing age group folders: ")
 
 if not os.path.exists(root):
     raise FileNotFoundError(f"The specified root directory '{root}' does not exist.")

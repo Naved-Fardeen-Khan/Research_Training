@@ -35,7 +35,8 @@ if __name__ == "__main__":
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    dir_list = ['zero_shot_results', 'fine_tuned_results', 'real_world_results']
+    # Define paths for the three conditions. These were generated in the previous steps and should be updated if the paths change.
+    dir_list = ['zero_shot_results', 'fine_tuned_results', 'real_world_results'] 
     for directory in dir_list:
         output_filename = f'{output_dir}/combined_{directory}.csv'
         combine_csv_files(directory, output_filename)

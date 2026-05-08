@@ -6,6 +6,8 @@ import re
 import os
 
 # --- 1. CONFIGURATION ---
+
+# Define paths for the three conditions. These were generated in the previous steps and should be updated if the paths change.
 paths = {
     "Zeroshot": "combined_csv_files/combined_zero_shot_results.csv",
     "Finetuned": "combined_csv_files/combined_fine_tuned_results.csv",

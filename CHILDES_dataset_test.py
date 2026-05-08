@@ -16,7 +16,7 @@ def ttr_calculate(text):
     return len(types) / len(tokens)
 
 # --- SETTINGS ---
-path = 'txt_data' 
+path = input("Enter the path to the CHILDES dataset (e.g., 'childes_data/'): ")
 target_ages = list(range(3, 85, 3)) # The same bins used for generation
 samples_per_age = 100
 

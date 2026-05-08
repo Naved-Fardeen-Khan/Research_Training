@@ -9,6 +9,7 @@ from tqdm import tqdm
 
 # --- 1. SETTINGS ---
 judge_model_id = "openai-community/gpt2"
+# Define paths for the three conditions. These were generated in the previous steps and should be updated if the paths change.
 paths = {
     "Zeroshot": "combined_csv_files/combined_zero_shot_results.csv",
     "Finetuned": "combined_csv_files/combined_fine_tuned_results.csv",
@@ -34,7 +35,7 @@ base_model = AutoModelForCausalLM.from_pretrained(
 )
 tokenizer = AutoTokenizer.from_pretrained(judge_model_id)
 
-# Function to get perplexity for a single sentence
+# Function to get perplexity
 def get_perplexity(model, sentence):
     if not isinstance(sentence, str) or len(sentence.strip()) == 0:
         return np.nan

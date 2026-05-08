@@ -9,3 +9,4 @@ __pycache__/
 hf_cache/
 Training_data/
 txt_data/
+shell_scripts/

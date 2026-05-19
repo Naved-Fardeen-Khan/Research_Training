@@ -5,7 +5,7 @@ Program code for fine-tuning a Phi-3 language model (LM) from CHILDES transcript
 ### Contents:
 
 * **LoRA.py**: The main script for fine-tuning the `microsoft/Phi-3-mini-4k-instruct` model using LoRA on the Puhti HPC cluster.
-* * **CHILDES_dataset_test.py**: Script to extract and sample real-world data from the CHILDES database into age-specific bins, calculating human baseline Lexical Diversity (TTR) and exporting reference CSVs.
+* **CHILDES_dataset_test.py**: Script to extract and sample real-world data from the CHILDES database into age-specific bins, calculating human baseline Lexical Diversity (TTR) and exporting reference CSVs.
 * **zero_shot_test.py**: Script to evaluate the base (untrained) Phi-3 model. Generates baseline child-directed speech across target age bins, calculates initial TTR, and exports outputs.
 * **test_model.py**: Script to load the fine-tuned LoRA adapter, generate age-appropriate transcripts, and calculate the post-training TTR metrics.
 * **perplexity.py**: Script for calculating unbiased generative perplexity scores for the generated texts and original CHILDES texts using an independent GPT-2 judge.

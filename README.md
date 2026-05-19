@@ -1,15 +1,15 @@
-Code for Naved Fardeen Khan (2026). "Simulating Human Developmental Speech: Fine-Tuning LLMs for Age-Appropriate Parental Dialogue", Research Training Project.
+### Code for Naved Fardeen Khan (2026). "Simulating Human Developmental Speech: Fine-Tuning LLMs for Age-Appropriate Parental Dialogue", Research Training Project.
 
 Program code for fine-tuning a Phi-3 language model (LM) from CHILDES transcripts using Low-Rank Adaptation (LoRA) and generating/evaluating age-appropriate child-directed speech.
 
-Contents:
+### Contents:
 
 * **LoRA.py**: The main script for fine-tuning the `microsoft/Phi-3-mini-4k-instruct` model using LoRA on the Puhti HPC cluster.
 * **perplexity.py**: Script for calculating unbiased generative perplexity scores for the generated texts and original CHILDES texts using an independent GPT-2 judge.
 * **triple_plot.py**: Plotting the results based on the corpus analyses (TTR, MLU, and Perplexity comparisons) using Matplotlib and Seaborn.
 * **requirements.txt**: List of Python dependencies required to run the pipeline.
 
-Main dependencies:
+### Main dependencies:
 
 * Python
 * For LM training and generation:
@@ -25,7 +25,7 @@ Main dependencies:
     * `seaborn`
     * `tqdm`
 
-Instructions:
+### Instructions:
 
 1.  **Setup the environment:** Install the required Python packages using the provided requirements file.
     ```bash

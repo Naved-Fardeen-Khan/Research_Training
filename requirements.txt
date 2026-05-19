@@ -1,0 +1,10 @@
+pandas
+torch
+matplotlib
+seaborn
+transformers
+peft
+numpy
+tqdm
+accelerate
+bitsandbytes

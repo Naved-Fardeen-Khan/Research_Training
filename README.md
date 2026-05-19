@@ -46,16 +46,22 @@ Program code for fine-tuning a Phi-3 language model (LM) from CHILDES transcript
     * Run `test_model.py` to generate the fine-tuned, age-adapted transcripts.
     * Run `CHILDES_dataset_test.py` to sample the real-world dataset.
     ```bash
-    python tests/zero_shot_test.py
-    python tests/test_model.py
-    python tests/CHILDES_dataset_test.py
+    python zero_shot_test.py
+    python test_model.py
+    python CHILDES_dataset_test.py
     ```
-5.  **Evaluate Output:** Run `perplexity.py` to calculate the GPT-2 evaluation metrics on the generated transcripts versus the human baseline texts.
+    Run multiple times.
+
+5.  **Combine CSV files:** Run `combine_csv.py` to combine multiple generated CSV files into three unified datasets before running the final evaluations. 
+    ```bash
+    python combine_csv.py
+    ```
+6.  **Evaluate Output:** Run `perplexity.py` to calculate the GPT-2 evaluation metrics on the generated transcripts versus the human baseline texts.
     ```bash
     python perplexity.py
     ```
 
-6.  **Visualize Results:** Run `triple_plot.py` to generate the feature comparison graphs (Lexical Diversity, Utterance Length, Generative Naturalness) of the generated transcripts against original transcripts.
+7.  **Visualize Results:** Run `triple_plot.py` to generate the feature comparison graphs (Lexical Diversity, Utterance Length, Generative Naturalness) of the generated transcripts against original transcripts.
     ```bash
     python triple_plot.py
     ```
